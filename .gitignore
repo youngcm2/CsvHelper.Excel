@@ -8,3 +8,4 @@ project.lock.json
 /**/.idea
 /src/packages
 /src/CsvHelper.Excel.userprefs
+src/CsvHelper.Excel/nupkg

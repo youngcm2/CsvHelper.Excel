@@ -1,9 +1,8 @@
-﻿
+﻿using System.IO;
+using ClosedXML.Excel;
+
 namespace CsvHelper.Excel.Specs
 {
-    using System.IO;
-    using ClosedXML.Excel;
-
     public static class Helpers
     {
         public static XLWorkbook GetOrCreateWorkbook(string path, string worksheetName)
@@ -25,6 +24,12 @@ namespace CsvHelper.Excel.Specs
                 worksheet = workbook.AddWorksheet(sheetName);
             }
             return worksheet;
+        }
+
+        public static void Delete(string path)
+        {
+            var directory = Path.GetDirectoryName(path);
+            Directory.Delete(directory, true);
         }
     }
 }

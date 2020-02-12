@@ -4,8 +4,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.94.2" />
-    <PackageReference Include="CsvHelper" Version="2.16.2" />
+    <PackageReference Include="CsvHelper" Version="15.0.0" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.10.0" />
+    <PackageReference Include="FluentAssertions" Version="5.10.2" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
