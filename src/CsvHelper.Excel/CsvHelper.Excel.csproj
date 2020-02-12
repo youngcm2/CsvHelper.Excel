@@ -2,29 +2,20 @@
   <PropertyGroup>
     <Description>An implementation of ICsvParser and ICsvSerializer from CsvHelper that reads and writes using the ClosedXml library.</Description>
     <AssemblyTitle>CsvHelper for Excel</AssemblyTitle>
-    <VersionPrefix>1.0.6</VersionPrefix>
-    <Authors>Chris Rodgers</Authors>
-    <TargetFrameworks>net40;net35</TargetFrameworks>
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <Authors>Chris Young</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>CsvHelper.Excel</AssemblyName>
     <OutputType>Library</OutputType>
-    <PackageId>CsvHelper.Excel</PackageId>
+    <PackageId>CsvHelper.Excel.Core</PackageId>
     <PackageTags>CSV;CSVHelper;Excel;ClosedXML</PackageTags>
-    <PackageProjectUrl>https://github.com/christophano/CsvHelper.Excel</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/christophano/CsvHelper.Excel/blob/master/LICENSE</PackageLicenseUrl>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <Reference Include="System.Data" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
-    <Reference Include="System.Data" />
-    <Reference Include="System" />
-  </ItemGroup>
+    <PackageProjectUrl>https://github.com/youngcm2/CsvHelper.Excel</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/youngcm2/CsvHelper.Excel/blob/master/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>  
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.87.1" />
+    <PackageReference Include="ClosedXML" Version="0.94.2" />
     <PackageReference Include="CsvHelper" Version="2.16.3" />
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.7.2" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.10.0" />
   </ItemGroup>
 </Project>

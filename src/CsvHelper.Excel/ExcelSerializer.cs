@@ -14,7 +14,6 @@ namespace CsvHelper.Excel
         private readonly string path;
         private readonly bool disposeWorkbook;
         private readonly IXLRangeBase range;
-        private readonly bool disposeWorksheet;
         private bool disposed;
         private int currentRow = 1;
 
@@ -60,7 +59,6 @@ namespace CsvHelper.Excel
         public ExcelSerializer(XLWorkbook workbook, CsvConfiguration configuration = null)
             : this(workbook, "Export", configuration)
         {
-            disposeWorksheet = true;
         }
 
         /// <summary>
@@ -77,7 +75,6 @@ namespace CsvHelper.Excel
         public ExcelSerializer(XLWorkbook workbook, string sheetName, CsvConfiguration configuration = null)
             : this(workbook.GetOrAddWorksheet(sheetName), configuration)
         {
-            disposeWorksheet = true;
         }
         
         /// <summary>
@@ -183,7 +180,6 @@ namespace CsvHelper.Excel
             if (disposed) return;
             if (disposing)
             {
-                if (disposeWorksheet) range.Worksheet.Dispose();
                 if (disposeWorkbook)
                 {
                     Workbook.SaveAs(path);
