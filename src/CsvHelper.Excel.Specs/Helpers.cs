@@ -29,7 +29,7 @@ namespace CsvHelper.Excel.Specs
         public static void Delete(string path)
         {
             var directory = Path.GetDirectoryName(path);
-            Directory.Delete(directory, true);
+            Directory.Delete(directory!, true);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using ClosedXML.Excel;
 using FluentAssertions;
@@ -7,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace CsvHelper.Excel.Specs
 {
-    public class ExcelSerializerSpecs
+    public class ExcelWriterSpecs
     {
         public abstract class Spec : IDisposable
         {
@@ -20,7 +21,6 @@ namespace CsvHelper.Excel.Specs
 
             protected string Path { get; }
 
-            public ITestOutputHelper OutputHelper { get; private set; }
             protected string WorksheetName { get; }
 
             protected int StartRow { get; }
@@ -36,23 +36,22 @@ namespace CsvHelper.Excel.Specs
                 Path =
                     System.IO.Path.GetFullPath(System.IO.Path.Combine("data", Guid.NewGuid().ToString(), $"{path}.xlsx"));
 
+                outputHelper.WriteLine($"{path}: {Path}");
                 var directory = System.IO.Path.GetDirectoryName(Path);
                 if (!Directory.Exists(directory))
                 {
-                    Directory.CreateDirectory(directory);
+                    Directory.CreateDirectory(directory!);
                 }
 
-                OutputHelper = outputHelper;
                 WorksheetName = worksheetName;
                 StartRow = startRow;
                 StartColumn = startColumn;
             }
 
-            protected void Run(ExcelSerializer serialiser)
+            protected void Run(ExcelWriter excelWriter)
             {
-                using var writer = new CsvWriter(serialiser);
-                writer.Configuration.AutoMap<Person>();
-                writer.WriteRecords(Values);
+                excelWriter.Context.AutoMap<Person>();
+                excelWriter.WriteRecords(Values);
             }
 
             [Fact]
@@ -90,8 +89,8 @@ namespace CsvHelper.Excel.Specs
         {
             public SerialiseUsingPathSpec(ITestOutputHelper outputHelper) : base(outputHelper, "serialise_by_path")
             {
-                using var serialiser = new ExcelSerializer(Path);
-                Run(serialiser);
+                using var excelWriter = new ExcelWriter(Path, CultureInfo.InvariantCulture);
+                Run(excelWriter);
             }
 
             protected override XLWorkbook GetWorkbook() => Helpers.GetOrCreateWorkbook(Path, WorksheetName);
@@ -99,33 +98,14 @@ namespace CsvHelper.Excel.Specs
             protected override IXLWorksheet GetWorksheet()
                 => Helpers.GetOrCreateWorkbook(Path, WorksheetName).GetOrAddWorksheet(WorksheetName);
         }
-
-        public class SerialiseUsingPathWithOffsetsSpec : Spec
-        {
-            public SerialiseUsingPathWithOffsetsSpec(ITestOutputHelper outputHelper)
-                : base(outputHelper, "serialise_by_path_with_offsets", "Export", startRow: 5, startColumn: 5)
-            {
-                using var serialiser = new ExcelSerializer(Path)
-                {
-                    ColumnOffset = StartColumn - 1,
-                    RowOffset = StartRow - 1
-                };
-                Run(serialiser);
-            }
-
-            protected override XLWorkbook GetWorkbook() => Helpers.GetOrCreateWorkbook(Path, WorksheetName);
-
-            protected override IXLWorksheet GetWorksheet()
-                => Helpers.GetOrCreateWorkbook(Path, WorksheetName).GetOrAddWorksheet(WorksheetName);
-        }
-
+        
         public class SerialiseUsingPathAndSheetnameSpec : Spec
         {
             public SerialiseUsingPathAndSheetnameSpec(ITestOutputHelper outputHelper)
                 : base(outputHelper, $"serialise_by_path_and_sheetname", "a_different_sheet_name")
             {
-                using var serialiser = new ExcelSerializer(Path, WorksheetName);
-                Run(serialiser);
+                using var excelWriter = new ExcelWriter(Path, WorksheetName, CultureInfo.InvariantCulture);
+                Run(excelWriter);
             }
 
             protected override XLWorkbook GetWorkbook() => Helpers.GetOrCreateWorkbook(Path, WorksheetName);
@@ -136,21 +116,23 @@ namespace CsvHelper.Excel.Specs
 
         public class SerialiseUsingStreamSpec : Spec
         {
-            private readonly byte[] bytes;
+            private readonly byte[] _bytes;
 
             public SerialiseUsingStreamSpec(ITestOutputHelper outputHelper)
                 : base(outputHelper, "serialise_by_workbook")
             {
                 using var stream = new MemoryStream();
-                using var serialiser = new ExcelSerializer(stream);
-                Run(serialiser);
+                using (var excelWriter = new ExcelWriter(stream, CultureInfo.InvariantCulture, true))
+                {
+                    Run(excelWriter);
+                }
 
-                bytes = stream.ToArray();
+                _bytes = stream.ToArray();
             }
 
             protected override XLWorkbook GetWorkbook()
             {
-                using var stream = new MemoryStream(bytes);
+                using var stream = new MemoryStream(_bytes);
                 return new XLWorkbook(stream);
             }
 
@@ -162,21 +144,23 @@ namespace CsvHelper.Excel.Specs
 
         public class SerialiseUsingStreamAndSheetnameSpec : Spec
         {
-            private readonly byte[] bytes;
+            private readonly byte[] _bytes;
 
             public SerialiseUsingStreamAndSheetnameSpec(ITestOutputHelper outputHelper)
                 : base(outputHelper, "serialise_by_workbook_and_sheetname", "a_different_sheet_name")
             {
                 using var stream = new MemoryStream();
-                using var serialiser = new ExcelSerializer(stream, WorksheetName);
-                Run(serialiser);
+                using (var excelWriter = new ExcelWriter(stream, WorksheetName, CultureInfo.InvariantCulture))
+                {
+                    Run(excelWriter);
+                }
 
-                bytes = stream.ToArray();
+                _bytes = stream.ToArray();
             }
 
             protected override XLWorkbook GetWorkbook()
             {
-                using var stream = new MemoryStream(bytes);
+                using var stream = new MemoryStream(_bytes);
                 return new XLWorkbook(stream);
             }
 

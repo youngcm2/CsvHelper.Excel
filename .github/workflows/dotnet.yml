@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ master, release/* ]
+    branches: [ main, release/* ]
   pull_request:
-    branches: [ master, release/* ]
+    branches: [ main, release/* ]
 
 jobs:
   build:
@@ -13,13 +13,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.8
+      with:
+        versionSpec: '5.x'
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.8
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./src/CsvHelper.Excel.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release ./src/CsvHelper.Excel.sln
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --configuration Release --verbosity normal ./src/CsvHelper.Excel.sln
+    - name: Pack
+      run: dotnet pack --no-build --configuration Release --version-suffix="${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}" ./src/CsvHelper.Excel/CsvHelper.Excel.csproj --output .
+    - name: PushNuget
+      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_TOKEN}} --skip-duplicate
+    

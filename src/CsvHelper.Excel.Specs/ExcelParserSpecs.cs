@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using ClosedXML.Excel;
@@ -40,7 +41,7 @@ namespace CsvHelper.Excel.Specs
                 var directory = System.IO.Path.GetDirectoryName(Path);
                 if (!Directory.Exists(directory))
                 {
-                    Directory.CreateDirectory(directory);
+                    Directory.CreateDirectory(directory!);
                 }
                 WorksheetName = worksheetName;
                 StartRow = startRow;
@@ -64,7 +65,7 @@ namespace CsvHelper.Excel.Specs
             protected void Run(ExcelParser parser)
             {
                 using var reader = new CsvReader(parser);
-                reader.Configuration.AutoMap<Person>();
+                reader.Context.AutoMap<Person>();
                 Results = reader.GetRecords<Person>().ToArray();
             }
 
@@ -86,7 +87,7 @@ namespace CsvHelper.Excel.Specs
                 Helpers.Delete(Path);
             }
         }
-
+        
         public class ParseUsingPathSpec : Spec
         {
             public ParseUsingPathSpec() : base("parse_by_path")
@@ -96,20 +97,29 @@ namespace CsvHelper.Excel.Specs
             }
         }
 
-        public class ParseUsingPathWithOffsetsSpec : Spec
+        public class ParseUsingPathSpecAndCulture : Spec
         {
-            public ParseUsingPathWithOffsetsSpec() : base("parse_by_path_with_offset", "Export", 5, 5)
+            public ParseUsingPathSpecAndCulture() : base("parse_by_path_and_culture")
             {
-                using var parser = new ExcelParser(Path) {ColumnOffset = StartColumn - 1, RowOffset = StartRow - 1};
+                using var parser = new ExcelParser(Path, CultureInfo.InvariantCulture);
                 Run(parser);
             }
         }
-
+        
         public class ParseUsingPathAndSheetNameSpec : Spec
         {
             public ParseUsingPathAndSheetNameSpec() : base("parse_by_path_and_sheetname", "a_different_sheet_name")
             {
                 using var parser = new ExcelParser(Path, WorksheetName);
+                Run(parser);
+            }
+        }
+
+        public class ParseUsingPathAndSheetNameAndCultureSpec : Spec
+        {
+            public ParseUsingPathAndSheetNameAndCultureSpec() : base("parse_by_path_and_sheetname_and_culture", "a_different_sheet_name")
+            {
+                using var parser = new ExcelParser(Path, WorksheetName, CultureInfo.InvariantCulture);
                 Run(parser);
             }
         }
@@ -119,27 +129,17 @@ namespace CsvHelper.Excel.Specs
             public ParseUsingStreamSpec() : base("parse_by_stream")
             {
                 using var stream = File.OpenRead(Path);
-                using var parser = new ExcelParser(stream);
+                using var parser = new ExcelParser(stream, CultureInfo.InvariantCulture);
                 Run(parser);
             }
         }
-
-        public class ParseUsingStreamWithOffsetsSpec : Spec
-        {
-            public ParseUsingStreamWithOffsetsSpec() : base("parse_by_stream_with_offset", "Export", 5, 5)
-            {
-                using var stream = File.OpenRead(Path);
-                using var parser = new ExcelParser(stream) {ColumnOffset = StartColumn - 1, RowOffset = StartRow - 1};
-                Run(parser);
-            }
-        }
-
+        
         public class ParseUsingStreamAndSheetNameSpec : Spec
         {
             public ParseUsingStreamAndSheetNameSpec() : base("parse_by_stream_and_sheetname", "a_different_sheet_name")
             {
                 using var stream = File.OpenRead(Path);
-                using var parser = new ExcelParser(stream, WorksheetName);
+                using var parser = new ExcelParser(stream, WorksheetName, CultureInfo.InvariantCulture);
                 Run(parser);
             }
         }
