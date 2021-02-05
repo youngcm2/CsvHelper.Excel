@@ -22,6 +22,7 @@ namespace CsvHelper.Excel
         private readonly Stream _stream;
         private int _rawRow = 1;
         private string[] _currentRecord;
+        private int _lastRow;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExcelParser"/> class.
@@ -89,10 +90,21 @@ namespace CsvHelper.Excel
         /// <summary>
         /// Initializes a new instance of the <see cref="ExcelParser"/> class.
         /// </summary>
+        /// <param name="path">The stream.</param>
+        /// <param name="sheetName">The sheet name</param>
+        /// <param name="configuration">The configuration.</param>
+        public ExcelParser(string path, string sheetName, CsvConfiguration configuration) : this(
+            File.Open(path, FileMode.OpenOrCreate, FileAccess.Read), sheetName, configuration)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExcelParser"/> class.
+        /// </summary>
         /// <param name="stream">The stream.</param>
         /// <param name="sheetName">The sheet name</param>
         /// <param name="configuration">The configuration.</param>
-        private ExcelParser(Stream stream, string sheetName, CsvConfiguration configuration)
+        public ExcelParser(Stream stream, string sheetName, CsvConfiguration configuration)
         {
             var workbook = new XLWorkbook(stream, XLEventTracking.Disabled);
 
@@ -104,6 +116,7 @@ namespace CsvHelper.Excel
             Count = _worksheet.CellsUsed().Max(c => c.Address.ColumnNumber) -
                 _worksheet.CellsUsed().Min(c => c.Address.ColumnNumber) + 1;
 
+            _lastRow = _worksheet.LastRowUsed().RowNumber();
             Context = new CsvContext(this);
             _leaveOpen = Configuration.LeaveOpen;
         }
@@ -142,8 +155,7 @@ namespace CsvHelper.Excel
 
         public bool Read()
         {
-            var row = _worksheet.Row(Row);
-            if (!row.CellsUsed().Any())
+            if (Row > _lastRow)
             {
                 return false;
             }
@@ -156,8 +168,7 @@ namespace CsvHelper.Excel
 
         public Task<bool> ReadAsync()
         {
-            var row = _worksheet.Row(Row);
-            if (!row.CellsUsed().Any())
+            if (Row > _lastRow)
             {
                 return Task.FromResult(false);
             }

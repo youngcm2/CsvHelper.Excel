@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using ClosedXML.Excel;
+using CsvHelper.Configuration;
 using FluentAssertions;
 using Xunit;
 
@@ -14,9 +15,9 @@ namespace CsvHelper.Excel.Specs
         {
             protected readonly Person[] Values =
             {
-                new Person {Name = "Bill", Age = 40},
-                new Person {Name = "Ben", Age = 30},
-                new Person {Name = "Weed", Age = 40}
+                new() {Name = "Bill", Age = 40},
+                new() {Name = "Ben", Age = 30},
+                new() {Name = "Weed", Age = 40}
             };
 
             protected Person[] Results;
@@ -33,30 +34,46 @@ namespace CsvHelper.Excel.Specs
 
             protected IXLWorksheet Worksheet { get; }
 
-            protected Spec(string path, string worksheetName = "Export", int startRow = 1, int startColumn = 1)
+            protected Spec(string path, string worksheetName = "Export", int startRow = 1, int startColumn = 1,
+                bool includeBlankRow = false)
             {
                 Path =
-                    System.IO.Path.GetFullPath(System.IO.Path.Combine("data", Guid.NewGuid().ToString(), $"{path}.xlsx"));
-                
+                    System.IO.Path.GetFullPath(
+                        System.IO.Path.Combine("data", Guid.NewGuid().ToString(), $"{path}.xlsx"));
+
                 var directory = System.IO.Path.GetDirectoryName(Path);
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory!);
                 }
+
                 WorksheetName = worksheetName;
                 StartRow = startRow;
                 StartColumn = startColumn;
                 Workbook = Helpers.GetOrCreateWorkbook(Path, WorksheetName);
                 Worksheet = Workbook.GetOrAddWorksheet(WorksheetName);
+                var currentRow = StartRow;
 
-                var headerRow = Worksheet.Row(StartRow);
+                var headerRow = Worksheet.Row(currentRow);
                 headerRow.Cell(StartColumn).Value = nameof(Person.Name);
                 headerRow.Cell(StartColumn + 1).Value = nameof(Person.Age);
+                if (includeBlankRow)
+                {
+                    currentRow++;
+                    Worksheet.Row(currentRow);
+                }
+
                 for (var i = 0; i < Values.Length; i++)
                 {
-                    var row = Worksheet.Row(StartRow + i + 1);
+                    var row = Worksheet.Row(currentRow + i + 1);
                     row.Cell(StartColumn).Value = Values[i].Name;
                     row.Cell(StartColumn + 1).Value = Values[i].Age;
+                }
+
+                if (includeBlankRow)
+                {
+                    currentRow++;
+                    Worksheet.Row(currentRow);
                 }
 
                 Workbook.SaveAs(Path);
@@ -65,8 +82,10 @@ namespace CsvHelper.Excel.Specs
             protected void Run(ExcelParser parser)
             {
                 using var reader = new CsvReader(parser);
+
                 reader.Context.AutoMap<Person>();
-                Results = reader.GetRecords<Person>().ToArray();
+                var records = reader.GetRecords<Person>();
+                Results = records.ToArray();
             }
 
             [Fact]
@@ -87,12 +106,25 @@ namespace CsvHelper.Excel.Specs
                 Helpers.Delete(Path);
             }
         }
-        
+
         public class ParseUsingPathSpec : Spec
         {
             public ParseUsingPathSpec() : base("parse_by_path")
             {
                 using var parser = new ExcelParser(Path);
+                Run(parser);
+            }
+        }
+
+        public class ParseUsingPathSpecWithBlankRow : Spec
+        {
+            public ParseUsingPathSpecWithBlankRow() : base("parse_by_path", includeBlankRow: true)
+            {
+                var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    ShouldSkipRecord = record => record.All(string.IsNullOrEmpty)
+                };
+                using var parser = new ExcelParser(Path, null, csvConfiguration);
                 Run(parser);
             }
         }
@@ -105,7 +137,7 @@ namespace CsvHelper.Excel.Specs
                 Run(parser);
             }
         }
-        
+
         public class ParseUsingPathAndSheetNameSpec : Spec
         {
             public ParseUsingPathAndSheetNameSpec() : base("parse_by_path_and_sheetname", "a_different_sheet_name")
@@ -117,13 +149,14 @@ namespace CsvHelper.Excel.Specs
 
         public class ParseUsingPathAndSheetNameAndCultureSpec : Spec
         {
-            public ParseUsingPathAndSheetNameAndCultureSpec() : base("parse_by_path_and_sheetname_and_culture", "a_different_sheet_name")
+            public ParseUsingPathAndSheetNameAndCultureSpec() : base("parse_by_path_and_sheetname_and_culture",
+                "a_different_sheet_name")
             {
                 using var parser = new ExcelParser(Path, WorksheetName, CultureInfo.InvariantCulture);
                 Run(parser);
             }
         }
-        
+
         public class ParseUsingStreamSpec : Spec
         {
             public ParseUsingStreamSpec() : base("parse_by_stream")
@@ -133,7 +166,7 @@ namespace CsvHelper.Excel.Specs
                 Run(parser);
             }
         }
-        
+
         public class ParseUsingStreamAndSheetNameSpec : Spec
         {
             public ParseUsingStreamAndSheetNameSpec() : base("parse_by_stream_and_sheetname", "a_different_sheet_name")
