@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using ClosedXML.Excel;
 
-namespace CsvHelper.Excel.Specs
+namespace CsvHelper.Excel.Specs.Common
 {
     public static class Helpers
     {

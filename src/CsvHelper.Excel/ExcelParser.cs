@@ -178,6 +178,7 @@ namespace CsvHelper.Excel
                 return Task.FromResult(false);
             }
 
+            _currentRecord = GetRecord();
             _row++;
             _rawRow++;
             return Task.FromResult(true);
