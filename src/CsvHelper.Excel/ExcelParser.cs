@@ -111,12 +111,17 @@ namespace CsvHelper.Excel
             _worksheet = string.IsNullOrEmpty(sheetName) ? workbook.Worksheet(1) : workbook.Worksheet(sheetName);
 
             Configuration = configuration ?? new CsvConfiguration(CultureInfo.InvariantCulture);
-            this._stream = stream;
+            _stream = stream;
+            var lastRowUsed = _worksheet.LastRowUsed();
+            if (lastRowUsed != null)
+            {
+                _lastRow = lastRowUsed.RowNumber();
 
-            Count = _worksheet.CellsUsed().Max(c => c.Address.ColumnNumber) -
-                _worksheet.CellsUsed().Min(c => c.Address.ColumnNumber) + 1;
+                var cellsUsed = _worksheet.CellsUsed();
+                Count = cellsUsed.Max(c => c.Address.ColumnNumber) -
+                    cellsUsed.Min(c => c.Address.ColumnNumber) + 1;
+            }
 
-            _lastRow = _worksheet.LastRowUsed().RowNumber();
             Context = new CsvContext(this);
             _leaveOpen = Configuration.LeaveOpen;
         }
