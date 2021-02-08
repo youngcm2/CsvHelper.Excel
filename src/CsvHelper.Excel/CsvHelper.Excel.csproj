@@ -4,7 +4,7 @@
     <AssemblyTitle>CsvHelper for Excel</AssemblyTitle>
     <VersionPrefix>22.1.1</VersionPrefix>    
     <Authors>Chris Young</Authors>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>CsvHelper.Excel</AssemblyName>
     <OutputType>Library</OutputType>
