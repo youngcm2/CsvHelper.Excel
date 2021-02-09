@@ -1,0 +1,8 @@
+assembly-versioning-scheme: MajorMinorPatch
+mode: Mainline
+branches:
+  master:
+    regex: (^master$|^origin\/master$|^main$|^origin\/main$)    
+  release:
+    tag: beta
+    mode: ContinuousDeployment

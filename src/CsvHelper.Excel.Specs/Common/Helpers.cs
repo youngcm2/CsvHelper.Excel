@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using ClosedXML.Excel;
 
-namespace CsvHelper.Excel.Specs
+namespace CsvHelper.Excel.Specs.Common
 {
     public static class Helpers
     {
@@ -29,7 +29,7 @@ namespace CsvHelper.Excel.Specs
         public static void Delete(string path)
         {
             var directory = Path.GetDirectoryName(path);
-            Directory.Delete(directory, true);
+            Directory.Delete(directory!, true);
         }
     }
 }

@@ -1,8 +1,8 @@
-name: .NET CI
+name: .NET Publish
 
-on:  
-  pull_request:
-    types: [opened]
+on:
+  push:
+    branches: [ main, release/* ]  
 
 jobs:
   build:
@@ -21,6 +21,8 @@ jobs:
     - name: Determine Version
       id: gitversion
       uses: gittools/actions/gitversion/execute@v0.9.8
+      with:
+        useConfigFile: true
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -32,5 +34,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal ./src/CsvHelper.Excel.sln
     - name: Pack
-      run: dotnet pack --no-build --configuration Release --version-suffix="${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}" ./src/CsvHelper.Excel/CsvHelper.Excel.csproj --output .    
+      run: dotnet pack --no-build --configuration Release --version-suffix="${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}" ./src/CsvHelper.Excel/CsvHelper.Excel.csproj --output .
+    - name: PushNuget
+      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_TOKEN}} --skip-duplicate
     

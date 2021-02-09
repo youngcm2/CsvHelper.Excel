@@ -1,5 +1,5 @@
 ﻿
-namespace CsvHelper.Excel.Specs
+namespace CsvHelper.Excel.Specs.Common
 {
     public class Person
     {

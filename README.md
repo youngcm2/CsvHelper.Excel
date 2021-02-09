@@ -32,12 +32,12 @@ var people = reader.GetRecords<Person>();
 
 All constructor options have overloads allowing you to specify your own `CsvConfiguration`, otherwise the default is used.
 
-### ExcelSerializer
-`ExcelSerializer` implements `ISerializer` and, like `ExcelParser`, allows you to specify the path to which to (eventually) save the workbook or a stream.
+### ExcelWriter
+`ExcelWriter` inherits from `CsvWriter` and, like `ExcelParser`, allows you to specify the path to which to (eventually) save the workbook or a stream.
 
 When the path is passed to the constructor the creation and disposal of both the workbook and worksheet (defaultly named "Export") as well as the saving of the workbook on dispose, is handled by the serialiser.
 ```csharp
-using (var writer = new CsvWriter(new ExcelSerializer("path/to/file.xlsx")))
+using (var writer = new ExcelWriter("path/to/file.xlsx"))
 {
     writer.WriteRecords(people);
 }
@@ -46,10 +46,14 @@ When an instance of `stream` is passed to the constructor the creation and dispo
 ```csharp
 
 using var stream = new MemoryStream();
-using var serialiser = new ExcelParser(stream);
-using var writer = new CsvWriter(serialiser);
-writer.WriteRecords(people);
+using (var excelWriter = new ExcelWriter(stream, CultureInfo.InvariantCulture))
+{
+    excelWriter.WriteRecords(people);
+}
+//has to be disposed to write to the stream before accessing it.
+
 //other stuff
 var bytes = stream.ToArray();
 ```
 All constructor options have overloads allowing you to specify your own `CsvConfiguration`, otherwise the default is used.
+
