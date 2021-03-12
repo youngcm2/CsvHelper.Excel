@@ -81,7 +81,8 @@ namespace CsvHelper.Excel.Specs.Parser
 
         protected async Task RunAsync()
         {
-            var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture, shouldSkipRecord: record => record.All(string.IsNullOrEmpty));
+            var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture);
+            csvConfiguration.ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty);
 
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration);
             using var reader = new CsvReader(parser);
@@ -108,7 +109,8 @@ namespace CsvHelper.Excel.Specs.Parser
         [Fact]
         public async void RowsHaveData()
         {
-            var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture, shouldSkipRecord: record => record.All(string.IsNullOrEmpty));
+            var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture);
+            csvConfiguration.ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty);
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration );
             using var reader = new CsvReader(parser);
 

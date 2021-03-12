@@ -1,10 +1,10 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3329bce8_002D0c4a_002D484e_002D8490_002Dfdf9dd82f29b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;CsvHelper.Excel.Specs&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Project Location="/Users/chrisyoung/projects/CsvHelper.Excel/src/CsvHelper.Excel.Specs" Presentation="&amp;lt;CsvHelper.Excel.Specs&amp;gt;" /&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3329bce8_002D0c4a_002D484e_002D8490_002Dfdf9dd82f29b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;CsvHelper.Excel.Specs&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="\Users\chrisyoung\projects\CsvHelper.Excel\src\CsvHelper.Excel.Specs" Presentation="&amp;lt;CsvHelper.Excel.Specs&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d03634b0_002D4557_002D4e54_002Dbef6_002D75d15f706453/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;CsvHelper.Excel.Specs&amp;gt; #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Project Location="/Users/chris.young/projects/CsvHelper.Excel/src/CsvHelper.Excel.Specs" Presentation="&amp;lt;CsvHelper.Excel.Specs&amp;gt;" /&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d03634b0_002D4557_002D4e54_002Dbef6_002D75d15f706453/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;CsvHelper.Excel.Specs&amp;gt; #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="\Users\chris.young\projects\CsvHelper.Excel\src\CsvHelper.Excel.Specs" Presentation="&amp;lt;CsvHelper.Excel.Specs&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dd2881e1_002D794f_002D4c08_002D9d09_002D25d7914949c2/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ExcelSerializerSpecs.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Project Location="/Users/chris.young/projects/CsvHelper.Excel/src/CsvHelper.Excel.Specs" Presentation="&amp;lt;CsvHelper.Excel.Specs&amp;gt;" /&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dd2881e1_002D794f_002D4c08_002D9d09_002D25d7914949c2/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ExcelSerializerSpecs.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="\Users\chris.young\projects\CsvHelper.Excel\src\CsvHelper.Excel.Specs" Presentation="&amp;lt;CsvHelper.Excel.Specs&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
