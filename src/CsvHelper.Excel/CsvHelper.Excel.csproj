@@ -14,7 +14,7 @@
     <PackageLicenseUrl>https://github.com/youngcm2/CsvHelper.Excel/blob/master/LICENSE</PackageLicenseUrl>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>26.0.1</Version>
+    <Version>26.0.2</Version>
   </PropertyGroup> 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.95.4" />

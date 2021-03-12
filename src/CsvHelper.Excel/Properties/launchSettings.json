@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "CsvHelper.Excel": {
+      "commandName": "Project"
+    }
+  }
+}
