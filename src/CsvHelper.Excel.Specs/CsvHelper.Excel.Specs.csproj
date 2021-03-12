@@ -21,4 +21,12 @@
   <ItemGroup>
     <ProjectReference Include="..\CsvHelper.Excel\CsvHelper.Excel.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="demo.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="demo.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -17,10 +17,10 @@ namespace CsvHelper.Excel
         private readonly bool _leaveOpen;
 
         private bool _disposed;
-        private int _row = 1;
+        private int _row = 0;
         private readonly IXLWorksheet _worksheet;
         private readonly Stream _stream;
-        private int _rawRow = 1;
+        private int _rawRow = 0;
         private string[] _currentRecord;
         private int _lastRow;
 
@@ -83,7 +83,7 @@ namespace CsvHelper.Excel
         /// <param name="culture">The culture.</param>
         /// <param name="leaveOpen"><c>true</c> to leave the <see cref="TextWriter"/> open after the <see cref="ExcelParser"/> object is disposed, otherwise <c>false</c>.</param>
         public ExcelParser(Stream stream, string sheetName, CultureInfo culture, bool leaveOpen = false) : this(stream,
-            sheetName, new CsvConfiguration(culture) {LeaveOpen = leaveOpen})
+            sheetName, new CsvConfiguration(culture) { LeaveOpen = leaveOpen })
         {
         }
 
@@ -160,27 +160,25 @@ namespace CsvHelper.Excel
 
         public bool Read()
         {
-            if (Row > _lastRow)
+            if (Row+1 > _lastRow )
             {
                 return false;
             }
-
+            ++_row;
+            ++_rawRow;
             _currentRecord = GetRecord();
-            _row++;
-            _rawRow++;
             return true;
         }
 
         public Task<bool> ReadAsync()
         {
-            if (Row > _lastRow)
+            if (Row + 1 > _lastRow)
             {
                 return Task.FromResult(false);
             }
-
+            ++_row;
+            ++_rawRow;
             _currentRecord = GetRecord();
-            _row++;
-            _rawRow++;
             return Task.FromResult(true);
         }
 
