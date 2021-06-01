@@ -24,6 +24,9 @@ namespace CsvHelper.Excel
 		private readonly IXLWorksheet _worksheet;
 		private readonly Stream _stream;
 
+		public override int Index => _index;
+		public override int Row => _row;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ExcelWriter"/> class.
 		/// </summary>
