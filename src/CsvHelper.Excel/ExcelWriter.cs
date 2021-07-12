@@ -1,9 +1,12 @@
+using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 #pragma warning disable 649
 #pragma warning disable 169
@@ -90,6 +93,35 @@ namespace CsvHelper.Excel
 			_sanitizeForInjection = configuration.SanitizeForInjection;
 		}
 
+        public void SetDefaultColumnWidth(double width)
+        {
+            _worksheet.ColumnWidth = width;
+        }
+
+        public void SetDefaultRowHeight(double height)
+        {
+            _worksheet.RowHeight = height;
+        }
+
+        public void AdjustColumnWidthFitToContents()
+        {
+			_worksheet.Columns().AdjustToContents();
+		}
+
+        public void SetColumnWidth(int columnIndex, double width)
+        {
+            _worksheet.Column(columnIndex).Width = width;
+        }
+
+        public void AdjustRowFitToContents()
+		{
+            _worksheet.Rows().AdjustToContents();
+		}
+
+        public void SetRowHeight(int rowIndex, double height)
+        {
+            _worksheet.Row(rowIndex).Height = height;
+        }
 
 		/// <inheritdoc/>
 		public override void WriteField(string field, bool shouldQuote)
@@ -131,8 +163,23 @@ namespace CsvHelper.Excel
 			return _stream.FlushAsync();
 		}
 
+        public override void WriteField<T>(T field, ITypeConverter converter)
+        {
+            base.WriteField(field, converter);
+            var option = Context.TypeConverterOptionsCache.GetOptions<T>();
+            var cell = _worksheet.Cell(_row, _index);
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			if (cell.DataType == XLDataType.DateTime || cell.DataType == XLDataType.TimeSpan)
+            {
+                cell.Style.DateFormat.Format = option.Formats.FirstOrDefault();
+            }
+			else if (cell.DataType == XLDataType.Number)
+            {
+                cell.Style.NumberFormat.Format = option.Formats.FirstOrDefault();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void WriteToCell(string value)
 		{
 			var length = value?.Length ?? 0;
@@ -142,7 +189,8 @@ namespace CsvHelper.Excel
 				return;
 			}
 
-			_worksheet.Worksheet.AsRange().Cell(_row, _index).Value = value;
+            var cell = _worksheet.Worksheet.AsRange().Cell(_row, _index);
+            cell.Value = value;
 		}
 
 		/// <inheritdoc/>
