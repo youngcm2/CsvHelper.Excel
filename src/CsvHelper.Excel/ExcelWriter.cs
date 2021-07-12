@@ -165,19 +165,21 @@ namespace CsvHelper.Excel
 
         public override void WriteField<T>(T field, ITypeConverter converter)
         {
-            base.WriteField(field, converter);
             var option = Context.TypeConverterOptionsCache.GetOptions<T>();
             var cell = _worksheet.Cell(_row, _index);
 
-			if (cell.DataType == XLDataType.DateTime || cell.DataType == XLDataType.TimeSpan)
+            Type type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+
+			if (type == typeof(DateTime) || type == typeof(TimeSpan))
             {
-                cell.Style.DateFormat.Format = option.Formats.FirstOrDefault();
+                cell.Style.DateFormat.Format = option.Formats?.FirstOrDefault();
             }
-			else if (cell.DataType == XLDataType.Number)
+			else if (type == typeof(int) || type == typeof(double) || type == typeof(float) || type == typeof(long))
             {
-                cell.Style.NumberFormat.Format = option.Formats.FirstOrDefault();
+                cell.Style.NumberFormat.Format = option.Formats?.FirstOrDefault();
             }
-        }
+            base.WriteField(field, converter);
+		}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void WriteToCell(string value)
