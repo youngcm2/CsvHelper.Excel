@@ -206,5 +206,23 @@ namespace CsvHelper.Excel
             var values = cells.Select(x => x.GetFormattedString()).ToArray();
             return values;
         }
+
+        /// <summary>Gets the comment of a cell.</summary>
+        /// <param name="column">The column.</param>
+        /// <returns>Return comment text, if any. <c>null</c> otherwise.</returns>
+        public string GetComment(int column)
+        {
+            return GetComment(column, Row);
+        }
+
+        /// <summary>Gets the comment of a cell.</summary>
+        /// <param name="column">The column.</param>
+        /// <param name="row">The row.</param>
+        /// <returns>Return comment text, if any. <c>null</c> otherwise.</returns>
+        public string GetComment(int column, int row)
+        {
+            var cell = _worksheet.Cell(column, row);
+            return cell.HasComment ? cell.Comment.Text : null;
+        }
     }
 }
