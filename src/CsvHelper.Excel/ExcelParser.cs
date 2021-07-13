@@ -203,7 +203,7 @@ namespace CsvHelper.Excel
         {
             var currentRow = _worksheet.Row(Row);
             var cells = currentRow.Cells(1, Count);
-            var values = cells.Select(x => x.Value.ToString()).ToArray();
+            var values = cells.Select(x => x.GetFormattedString()).ToArray();
             return values;
         }
     }

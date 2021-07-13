@@ -123,7 +123,13 @@ namespace CsvHelper.Excel
             _worksheet.Row(rowIndex).Height = height;
         }
 
-		/// <inheritdoc/>
+        public override void WriteComment(string text)
+        {
+            var cell = _worksheet.Cell(_row, _index);
+            cell.Comment.AddText(text).AddNewLine();
+        }
+
+        /// <inheritdoc/>
 		public override void WriteField(string field, bool shouldQuote)
 		{
 			if (_sanitizeForInjection)
