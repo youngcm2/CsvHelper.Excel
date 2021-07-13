@@ -1,9 +1,12 @@
+using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 #pragma warning disable 649
 #pragma warning disable 169
@@ -72,7 +75,7 @@ namespace CsvHelper.Excel
  		/// <param name="sheetName">The sheet name</param>
 		/// <param name="culture">The culture.</param>
 		/// <param name="leaveOpen"><c>true</c> to leave the <see cref="TextWriter"/> open after the <see cref="ExcelWriter"/> object is disposed, otherwise <c>false</c>.</param>
-		public ExcelWriter(Stream stream, string sheetName, CultureInfo culture, bool leaveOpen = false) : this(stream, sheetName, new CsvConfiguration(culture) { LeaveOpen = leaveOpen }) { }
+		public ExcelWriter(Stream stream, string sheetName, CultureInfo culture, bool leaveOpen = false) : this(stream, sheetName, new CsvConfiguration(culture, leaveOpen: leaveOpen)) { }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ExcelWriter"/> class.
@@ -90,8 +93,43 @@ namespace CsvHelper.Excel
 			_sanitizeForInjection = configuration.SanitizeForInjection;
 		}
 
+        public void SetDefaultColumnWidth(double width)
+        {
+            _worksheet.ColumnWidth = width;
+        }
 
-		/// <inheritdoc/>
+        public void SetDefaultRowHeight(double height)
+        {
+            _worksheet.RowHeight = height;
+        }
+
+        public void AdjustColumnWidthFitToContents()
+        {
+			_worksheet.Columns().AdjustToContents();
+		}
+
+        public void SetColumnWidth(int columnIndex, double width)
+        {
+            _worksheet.Column(columnIndex).Width = width;
+        }
+
+        public void AdjustRowFitToContents()
+		{
+            _worksheet.Rows().AdjustToContents();
+		}
+
+        public void SetRowHeight(int rowIndex, double height)
+        {
+            _worksheet.Row(rowIndex).Height = height;
+        }
+
+        public override void WriteComment(string text)
+        {
+            var cell = _worksheet.Cell(_row, _index);
+            cell.Comment.AddText(text).AddNewLine();
+        }
+
+        /// <inheritdoc/>
 		public override void WriteField(string field, bool shouldQuote)
 		{
 			if (_sanitizeForInjection)
@@ -131,8 +169,25 @@ namespace CsvHelper.Excel
 			return _stream.FlushAsync();
 		}
 
+        public override void WriteField<T>(T field, ITypeConverter converter)
+        {
+            var option = Context.TypeConverterOptionsCache.GetOptions<T>();
+            var cell = _worksheet.Cell(_row, _index);
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            Type type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+
+			if (type == typeof(DateTime) || type == typeof(TimeSpan))
+            {
+                cell.Style.DateFormat.Format = option.Formats?.FirstOrDefault();
+            }
+			else if (type == typeof(int) || type == typeof(double) || type == typeof(float) || type == typeof(long))
+            {
+                cell.Style.NumberFormat.Format = option.Formats?.FirstOrDefault();
+            }
+            base.WriteField(field, converter);
+		}
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void WriteToCell(string value)
 		{
 			var length = value?.Length ?? 0;
@@ -142,7 +197,8 @@ namespace CsvHelper.Excel
 				return;
 			}
 
-			_worksheet.Worksheet.AsRange().Cell(_row, _index).Value = value;
+            var cell = _worksheet.Worksheet.AsRange().Cell(_row, _index);
+            cell.Value = value;
 		}
 
 		/// <inheritdoc/>
