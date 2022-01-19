@@ -195,6 +195,7 @@ namespace CsvHelper.Excel
         public string RawRecord => string.Join(Configuration.Delimiter, Record);
         public int Row => _row;
         public int RawRow => _rawRow;
+        public int LastRow => _lastRow;
 
         public string Delimiter => Configuration.Delimiter;
         public CsvContext Context { get; }
