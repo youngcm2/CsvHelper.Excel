@@ -23,6 +23,8 @@ namespace CsvHelper.Excel
         private int _rawRow = 1;
         private string[] _currentRecord;
         private readonly int _lastRow;
+        private readonly int _firstColumn;
+        private readonly int _lastColumn;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExcelParser"/> class.
@@ -118,8 +120,9 @@ namespace CsvHelper.Excel
                 _lastRow = lastRowUsed.RowNumber();
 
                 var cellsUsed = _worksheet.CellsUsed();
-                Count = cellsUsed.Max(c => c.Address.ColumnNumber) -
-                    cellsUsed.Min(c => c.Address.ColumnNumber) + 1;
+                _firstColumn = cellsUsed.Min(c => c.Address.ColumnNumber);
+                _lastColumn = cellsUsed.Max(c => c.Address.ColumnNumber);
+                Count = _lastColumn - _firstColumn + 1;
             }
 
             Context = new CsvContext(this);
@@ -204,7 +207,7 @@ namespace CsvHelper.Excel
         private string[] GetRecord()
         {
             var currentRow = _worksheet.Row(Row);
-            var cells = currentRow.Cells(1, Count);
+            var cells = currentRow.Cells(_firstColumn, _lastColumn);
             var values = Configuration.TrimOptions.HasFlag(TrimOptions.Trim)
                 ? cells.Select(x => x.Value.ToString()?.Trim()).ToArray()
                 : cells.Select(x => x.Value.ToString()).ToArray();
