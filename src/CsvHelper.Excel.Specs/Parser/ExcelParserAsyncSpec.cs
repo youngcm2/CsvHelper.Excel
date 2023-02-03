@@ -83,7 +83,7 @@ namespace CsvHelper.Excel.Specs.Parser
         {
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty)
+                ShouldSkipRecord = record => record.Row.Parser.Record.All(string.IsNullOrEmpty)
             };
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration);
             using var reader = new CsvReader(parser);
@@ -112,7 +112,7 @@ namespace CsvHelper.Excel.Specs.Parser
         {
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty)
+                ShouldSkipRecord = record => record.Row.Parser.Record.All(string.IsNullOrEmpty)
             };
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration );
             using var reader = new CsvReader(parser);

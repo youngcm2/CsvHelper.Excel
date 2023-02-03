@@ -86,9 +86,9 @@ namespace CsvHelper.Excel
         /// <param name="culture">The culture.</param>
         /// <param name="leaveOpen"><c>true</c> to leave the <see cref="TextWriter"/> open after the <see cref="ExcelWriter"/> object is disposed, otherwise <c>false</c>.</param>
         public ExcelWriter(Stream stream, string sheetName, CultureInfo culture, bool leaveOpen = false) : this(stream,
-            sheetName, new CsvConfiguration(culture) { LeaveOpen = leaveOpen })
+            sheetName, new CsvConfiguration(culture))
         {
-            
+            _leaveOpen = leaveOpen;
         }
 
         /// <summary>
@@ -101,11 +101,10 @@ namespace CsvHelper.Excel
             configuration)
         {
             configuration.Validate();
-            _worksheet = new XLWorkbook(XLEventTracking.Disabled).AddWorksheet(sheetName);
+            _worksheet = new XLWorkbook().AddWorksheet(sheetName);
             this._stream = stream;
 
-            _leaveOpen = configuration.LeaveOpen;
-            _sanitizeForInjection = configuration.SanitizeForInjection;
+            _sanitizeForInjection = configuration.InjectionOptions == InjectionOptions.Escape;
         }
 
 
