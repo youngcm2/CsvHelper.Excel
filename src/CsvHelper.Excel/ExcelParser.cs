@@ -23,6 +23,7 @@ namespace CsvHelper.Excel
         private int _rawRow = 1;
         private string[] _currentRecord;
         private readonly int _lastRow;
+        private int _rowOffset = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExcelParser"/> class.
@@ -195,6 +196,19 @@ namespace CsvHelper.Excel
         public string RawRecord => string.Join(Configuration.Delimiter, Record);
         public int Row => _row;
         public int RawRow => _rawRow;
+        public int RowOffset
+        {
+            get => _rowOffset;
+            init
+            {
+                if (value <= 0)
+                {
+                    return;
+                }
+                _rowOffset = value;
+                _row += value;
+            }
+        }
 
         public string Delimiter => Configuration.Delimiter;
         public CsvContext Context { get; }
