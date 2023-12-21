@@ -123,7 +123,10 @@ namespace CsvHelper.Excel
             }
 
             Context = new CsvContext(this);
-            _leaveOpen = Configuration.LeaveOpen;
+            if (configuration != null)
+            {
+                _leaveOpen = configuration.LeaveOpen; // use the csvconfiguration instead of the IParserConfiguration interface as LeaveOpen was removed in CsvHelper 30.0.0
+            }
         }
 
 

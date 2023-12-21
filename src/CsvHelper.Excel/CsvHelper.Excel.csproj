@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>An implementation of ICsvParser and ICsvSerializer from CsvHelper that reads and writes using the ClosedXml library.</Description>
     <AssemblyTitle>CsvHelper for Excel</AssemblyTitle>
-    <VersionPrefix>27.2.1</VersionPrefix>    
+    <VersionPrefix>27.2.2</VersionPrefix>    
     <Authors>Chris Young</Authors>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <DebugType>portable</DebugType>
