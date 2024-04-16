@@ -81,7 +81,7 @@ namespace CsvHelper.Excel.Specs.Parser
             using var reader = new CsvReader(parser);
 
             reader.Context.AutoMap<Person>();
-            var records = reader.GetRecords<Person>();
+            var records = reader.GetRecords<Person>().ToList();
             Results = records.ToArray();
         }
         

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -83,16 +84,18 @@ namespace CsvHelper.Excel.Specs.Parser
         {
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty)
+                ShouldSkipRecord = x => x.Row.Parser.Record?.All(field => string.IsNullOrWhiteSpace(field)) ?? false
             };
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration);
             using var reader = new CsvReader(parser);
 
             reader.Context.AutoMap<Person>();
+
             var records = reader.GetRecordsAsync<Person>();
+            
             Results = await records.ToArrayAsync();
         }
-        
+
         [Fact]
         public async void TheResultsAreNotNull()
         {
@@ -112,7 +115,7 @@ namespace CsvHelper.Excel.Specs.Parser
         {
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty)
+                ShouldSkipRecord = x => x.Row.Parser.Record?.All(field => string.IsNullOrWhiteSpace(field)) ?? false
             };
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration );
             using var reader = new CsvReader(parser);
