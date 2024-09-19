@@ -2,7 +2,9 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+
 using ClosedXML.Excel;
+
 using CsvHelper.Configuration;
 
 #pragma warning disable 649
@@ -16,7 +18,6 @@ namespace CsvHelper.Excel
     public class ExcelWriter : CsvWriter
     {
         private readonly bool _leaveOpen;
-        private readonly bool _sanitizeForInjection;
 
         private bool _disposed;
         private int _row = 1;
@@ -86,9 +87,9 @@ namespace CsvHelper.Excel
         /// <param name="culture">The culture.</param>
         /// <param name="leaveOpen"><c>true</c> to leave the <see cref="TextWriter"/> open after the <see cref="ExcelWriter"/> object is disposed, otherwise <c>false</c>.</param>
         public ExcelWriter(Stream stream, string sheetName, CultureInfo culture, bool leaveOpen = false) : this(stream,
-            sheetName, new CsvConfiguration(culture) { LeaveOpen = leaveOpen })
+            sheetName, new CsvConfiguration(culture), leaveOpen)
         {
-            
+
         }
 
         /// <summary>
@@ -97,22 +98,23 @@ namespace CsvHelper.Excel
         /// <param name="stream">The stream.</param>
         /// <param name="sheetName">The sheet name</param>
         /// <param name="configuration">The configuration.</param>
-        private ExcelWriter(Stream stream, string sheetName, CsvConfiguration configuration) : base(TextWriter.Null,
+        /// <param name="leaveOpen"><c>true</c> to leave the <see cref="TextWriter"/> open after the <see cref="ExcelWriter"/> object is disposed, otherwise <c>false</c>.</param>
+
+        private ExcelWriter(Stream stream, string sheetName, CsvConfiguration configuration, bool leaveOpen = false) : base(TextWriter.Null,
             configuration)
         {
             configuration.Validate();
-            _worksheet = new XLWorkbook(XLEventTracking.Disabled).AddWorksheet(sheetName);
+            _worksheet = new XLWorkbook().AddWorksheet(sheetName);
             this._stream = stream;
 
-            _leaveOpen = configuration.LeaveOpen;
-            _sanitizeForInjection = configuration.SanitizeForInjection;
+            _leaveOpen = leaveOpen;
         }
 
 
         /// <inheritdoc/>
         public override void WriteField(string field, bool shouldQuote)
         {
-            if (_sanitizeForInjection)
+            if (Configuration.InjectionOptions != InjectionOptions.None)
             {
                 field = SanitizeForInjection(field);
             }

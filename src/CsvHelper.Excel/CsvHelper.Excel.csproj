@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>An implementation of ICsvParser and ICsvSerializer from CsvHelper that reads and writes using the ClosedXml library.</Description>
     <AssemblyTitle>CsvHelper for Excel</AssemblyTitle>
-    <VersionPrefix>27.2.1</VersionPrefix>    
+    <VersionPrefix>33.0.0</VersionPrefix>    
     <Authors>Chris Young</Authors>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <DebugType>portable</DebugType>
@@ -15,8 +15,8 @@
     <PackageOutputPath>./nupkg</PackageOutputPath>
   </PropertyGroup> 
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.95.4" />
-    <PackageReference Include="CsvHelper" Version="27.2.1" />
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.15.0" />
+    <PackageReference Include="ClosedXML" Version="0.102.3" />
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
   </ItemGroup>
 </Project>

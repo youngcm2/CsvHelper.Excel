@@ -83,7 +83,7 @@ namespace CsvHelper.Excel.Specs.Parser
         {
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty)
+                ShouldSkipRecord = args => args.Row.Parser.Record?.All(string.IsNullOrWhiteSpace) ?? false,
             };
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration);
             using var reader = new CsvReader(parser);
@@ -94,25 +94,25 @@ namespace CsvHelper.Excel.Specs.Parser
         }
         
         [Fact]
-        public async void TheResultsAreNotNull()
+        public async Task TheResultsAreNotNull()
         {
             await RunAsync();
             Results.Should().NotBeNull();
         }
 
         [Fact]
-        public async void TheResultsAreCorrect()
+        public async Task TheResultsAreCorrect()
         {
             await RunAsync();
             Values.Should().BeEquivalentTo(Results, options => options.IncludingProperties());
         }
 
         [Fact]
-        public async void RowsHaveData()
+        public async Task RowsHaveData()
         {
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                ShouldSkipRecord = record => record.Record.All(string.IsNullOrEmpty)
+                ShouldSkipRecord = args => args.Row.Parser.Record?.All(string.IsNullOrWhiteSpace) ?? false,
             };
             using var parser = new ExcelParser(Path, WorksheetName, csvConfiguration );
             using var reader = new CsvReader(parser);
